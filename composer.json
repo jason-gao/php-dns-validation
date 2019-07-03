@@ -1,0 +1,28 @@
+{
+    "name": "jasong/dns-validation",
+    "description": "dns format validation etc..",
+    "authors": [
+        {
+            "name": "jason-gao",
+            "email": "3048789891@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0",
+        "friendsofphp/php-cs-fixer": "^2.10|^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "DnsValidation\\": "src/"
+        },
+        "files": []
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
