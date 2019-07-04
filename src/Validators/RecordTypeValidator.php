@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * 记录类型验证
+ */
+
 namespace DnsValidation\Validators;
 
 use DnsValidation\Cst;
 
-class RecordTypeValidator{
 
+class RecordTypeValidator{
 
     public static function validate($value){
         $types = Cst::getValidRecordTypes();
