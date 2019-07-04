@@ -38,8 +38,6 @@ class Cst
     }
 
 
-    const VIEW_SEARCH_ENGINE = ['searchengine', 'baidu', 'qihu', 'sougou', 'sousou', 'guge', 'weiruan', 'yahu'];
-
 }
 
 

@@ -14,7 +14,7 @@ class DotEndingValidator{
             return true;
         }
 
-        return true;
+        return false;
     }
 
 }

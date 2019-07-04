@@ -6,6 +6,6 @@ class IpValidator{
 
 
     public static function validate($value){
-        return filter_var($value, FILTER_VALIDATE_IP);
+        return (bool)filter_var($value, FILTER_VALIDATE_IP);
     }
 }

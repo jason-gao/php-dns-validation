@@ -11,6 +11,6 @@ class Ip4Validator
      */
     public static function validate($value)
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        return (bool)filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 }

@@ -12,6 +12,6 @@ class Ip6Validator
      */
     public static function validate($value)
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+        return (bool)filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 }
