@@ -18,7 +18,7 @@ class DnsDomainValidator
         }
 
 
-        if (!StringLengthValidator::validate($value, 0, 255)) {
+        if (!StringLengthValidator::validate($value, 1, 255)) {
             return false;
         }
 

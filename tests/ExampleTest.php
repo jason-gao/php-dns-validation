@@ -3,7 +3,10 @@
 namespace Tests;
 
 use DnsValidation\Cst;
+use DnsValidation\Validators\ConflictRecordTypeValidator;
 use DnsValidation\Validators\DefaultViewValidator;
+use DnsValidation\Validators\DnsDomainValidator;
+use DnsValidation\Validators\DotEndingValidator;
 use DnsValidation\Validators\Ip4Validator;
 use DnsValidation\Validators\Ip6Validator;
 use DnsValidation\Validators\RecordValueValidator;
@@ -11,6 +14,9 @@ use DnsValidation\Validators\MxPriorityValidator;
 use DnsValidation\Validators\IpValidator;
 use DnsValidation\Validators\RecordNameValidator;
 use DnsValidation\Validators\RecordTypeValidator;
+use DnsValidation\Validators\SrvRecordNameValidator;
+use DnsValidation\Validators\StringLengthValidator;
+use DnsValidation\Validators\TtlValidator;
 use DnsValidation\Validators\ViewsValidator;
 
 error_reporting(0);
@@ -25,6 +31,28 @@ class ExampleTest extends TestCase
     public function testBasicTest()
     {
         $this->assertTrue(true);
+    }
+
+
+    public function testDnsDomain()
+    {
+        $value = "www.a.com";
+        $value2 = "a-bc.com";
+        $value3 = "a.com#";
+        $value4 = ".a.com";
+        $value5 = "*.a.com";
+        $value6 = str_repeat("a", 500);
+        $value7 = "";
+        $value8 = "a".str_repeat("a", 100).".com";
+
+        $this->assertTrue(DnsDomainValidator::validate($value));
+        $this->assertTrue(DnsDomainValidator::validate($value2));
+        $this->assertFalse(DnsDomainValidator::validate($value3));
+        $this->assertFalse(DnsDomainValidator::validate($value4));
+        $this->assertTrue(DnsDomainValidator::validate($value5));
+        $this->assertFalse(DnsDomainValidator::validate($value6));
+        $this->assertFalse(DnsDomainValidator::validate($value7));
+        $this->assertFalse(DnsDomainValidator::validate($value8));
     }
 
     public function testA()
@@ -80,7 +108,7 @@ class ExampleTest extends TestCase
         $this->assertFalse(RecordValueValidator::validate($type, $invalidValue));
     }
 
-    public function testMx()
+    public function testMxPri()
     {
         $value = 1;
         $invalidValue = "aaa";
@@ -89,6 +117,20 @@ class ExampleTest extends TestCase
         $this->assertTrue(MxPriorityValidator::validate($value));
         $this->assertFalse(MxPriorityValidator::validate($invalidValue));
         $this->assertFalse(MxPriorityValidator::validate($value2));
+    }
+
+
+    public function testRecordValueMx()
+    {
+        $type = Cst::RECORD_TYPE_MX;
+
+        $value = "1.1.1.1.";
+        $value2 = "a.com.";
+        $value3 = "www.a.com.";
+
+        $this->assertTrue(RecordValueValidator::validate($type, $value));
+        $this->assertTrue(RecordValueValidator::validate($type, $value2));
+        $this->assertTrue(RecordValueValidator::validate($type, $value3));
     }
 
     public function testRecordName()
@@ -204,6 +246,83 @@ class ExampleTest extends TestCase
 
         $this->assertTrue(ViewsValidator::validate($views, $view));
         $this->assertFalse(ViewsValidator::validate($views, $view2));
+    }
+
+    public function testSrvName()
+    {
+        $value = "_xmpp-server._tcp";
+        $value2 = "aaa";
+
+        $this->assertTrue(SrvRecordNameValidator::validate($value));
+        $this->assertFalse(SrvRecordNameValidator::validate($value2));
+    }
+
+
+    public function testConflict()
+    {
+        //A
+        $value = [
+            CST::RECORD_TYPE_A,
+            CST::RECORD_TYPE_CNAME,
+        ];
+
+        $value2 = [
+            CST::RECORD_TYPE_A,
+            CST::RECORD_TYPE_TXT,
+        ];
+
+        $this->assertFalse(ConflictRecordTypeValidator::validate($value));
+        $this->assertTrue(ConflictRecordTypeValidator::validate($value2));
+
+        //4A
+        $value3 = [
+            CST::RECORD_TYPE_4A,
+            CST::RECORD_TYPE_XURL,
+        ];
+
+        $value4 = [
+            CST::RECORD_TYPE_4A,
+            CST::RECORD_TYPE_NS,
+        ];
+
+        $this->assertFalse(ConflictRecordTypeValidator::validate($value3));
+        $this->assertTrue(ConflictRecordTypeValidator::validate($value4));
+    }
+
+
+    public function testTtl()
+    {
+        $value = 0;
+        $value2 = 1;
+        $value3 = -1;
+        $value4 = 2147483648;
+
+        $this->assertTrue(TtlValidator::validate($value));
+        $this->assertTrue(TtlValidator::validate($value2));
+        $this->assertFalse(TtlValidator::validate($value3));
+        $this->assertFalse(TtlValidator::validate($value4));
+    }
+
+
+    public function testDotEnding()
+    {
+        $value = "a.com";
+        $value2 = "a.com.";
+        $value3 = "";
+
+        $this->assertFalse(DotEndingValidator::validate($value));
+        $this->assertTrue(DotEndingValidator::validate($value2));
+        $this->assertFalse(DotEndingValidator::validate($value3));
+    }
+
+    public function testStringLength(){
+        $value = "a.com";
+        $min = 1;
+        $max = 10;
+        $max2 = 2;
+
+        $this->assertTrue(StringLengthValidator::validate($value, $min, $max));
+        $this->assertFalse(StringLengthValidator::validate($value, $min, $max2));
     }
 
 }

@@ -10,7 +10,7 @@ class SrvRecordNameValidator
     public static function validate($value)
     {
 
-        return preg_match(self::REG_SRV_NAME, $value);
+        return (bool)preg_match(self::REG_SRV_NAME, $value);
 
     }
 }
