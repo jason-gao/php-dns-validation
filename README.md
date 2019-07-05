@@ -8,5 +8,9 @@
 	- dns zone的验证
 	
 	
-## phpunit test cover 90%	
-
+## phpunit test cover 100%
+ 	- run test
+	- make test
+	
+## composer
+	- composer require jason-gao/dns-validation v1.0.0 	
