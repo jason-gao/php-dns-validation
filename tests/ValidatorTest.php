@@ -21,7 +21,7 @@ use DnsValidation\Validators\ViewsValidator;
 
 error_reporting(0);
 
-class ExampleTest extends TestCase
+class ValidatorTest extends TestCase
 {
     /**
      * A basic test example.
@@ -41,7 +41,7 @@ class ExampleTest extends TestCase
         $value3 = "a.com#";
         $value4 = ".a.com";
         $value5 = "*.a.com";
-        $value6 = str_repeat("a", 500);
+        $value6 = str_repeat("a.com", 500);
         $value7 = "";
         $value8 = "a" . str_repeat("a", 100) . ".com";
 
@@ -102,10 +102,12 @@ class ExampleTest extends TestCase
     {
         $value = "a.com.";
         $invalidValue = "a";
+        $value2 = "-a.com.";
         $type = Cst::RECORD_TYPE_NS;
 
         $this->assertTrue(RecordValueValidator::validate($type, $value));
         $this->assertFalse(RecordValueValidator::validate($type, $invalidValue));
+        $this->assertFalse(RecordValueValidator::validate($type, $value2));
     }
 
     public function testMxPri()
@@ -127,10 +129,12 @@ class ExampleTest extends TestCase
         $value = "1.1.1.1.";
         $value2 = "a.com.";
         $value3 = "www.a.com.";
+        $value4 = "a";
 
         $this->assertTrue(RecordValueValidator::validate($type, $value));
         $this->assertTrue(RecordValueValidator::validate($type, $value2));
         $this->assertTrue(RecordValueValidator::validate($type, $value3));
+        $this->assertFalse(RecordValueValidator::validate($type, $value4));
     }
 
     public function testRecordName()
@@ -152,6 +156,8 @@ class ExampleTest extends TestCase
         $value15 = "a.*.a.b";
         $value16 = "*a.b.com";
         $value17 = "a.*b.c";
+        $value18 = "@.a.com";
+        $value19 = "*.a.b.*.c";
 
 
         $this->assertTrue(RecordNameValidator::validate($value));
@@ -171,6 +177,8 @@ class ExampleTest extends TestCase
         $this->assertFalse(RecordNameValidator::validate($value15));
         $this->assertTrue(RecordNameValidator::validate($value16));
         $this->assertFalse(RecordNameValidator::validate($value17));
+        $this->assertFalse(RecordNameValidator::validate($value18));
+        $this->assertFalse(RecordNameValidator::validate($value19));
 
     }
 
@@ -191,12 +199,24 @@ class ExampleTest extends TestCase
 
         $value = "http://www.baidu.com/a";
         $value2 = "www.baidu.com";
+        $value3 = str_repeat("a", 201);
+        $value4 = "http://a.com";
 
         $this->assertTrue(RecordValueValidator::validate($type, $value));
         $this->assertTrue(RecordValueValidator::validate($type, $value2));
-
         $this->assertTrue(RecordValueValidator::validate($type2, $value));
         $this->assertTrue(RecordValueValidator::validate($type2, $value2));
+        $this->assertFalse(RecordValueValidator::validate($type, $value3));
+        $this->assertFalse(RecordValueValidator::validate($type2, $value3));
+        $this->assertTrue(RecordValueValidator::validate($type, $value4));
+    }
+
+    public function testRecordValueMax(){
+
+        $value = str_repeat("a", 256);
+        $type = Cst::RECORD_TYPE_TXT;
+
+        $this->assertFalse(RecordValueValidator::validate($type, $value));
     }
 
     public function testSrv()
@@ -205,9 +225,11 @@ class ExampleTest extends TestCase
 
         $value = "5 0 5269 xmpp-server.l.google.com.";
         $value2 = " 1 2 baidu.com.";
+        $value3 = "a";
 
         $this->assertTrue(RecordValueValidator::validate($type, $value));
         $this->assertFalse(RecordValueValidator::validate($type, $value2));
+        $this->assertFalse(RecordValueValidator::validate($type, $value3));
     }
 
 
@@ -216,8 +238,10 @@ class ExampleTest extends TestCase
         $type = Cst::RECORD_TYPE_TXT;
 
         $value = "aaa.bom";
+        $value2 = "v=spf1 ip4:222.73.10.252 ip4:61.152.91.23 ~all";
 
         $this->assertTrue(RecordValueValidator::validate($type, $value));
+        $this->assertTrue(RecordValueValidator::validate($type, $value2));
     }
 
     public function testDefaultViews()
