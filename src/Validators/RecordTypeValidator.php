@@ -6,13 +6,13 @@
 
 namespace DnsValidation\Validators;
 
-use DnsValidation\Cst;
+use DnsValidation\Helper;
 
 
 class RecordTypeValidator{
 
     public static function validate($value){
-        $types = Cst::getValidRecordTypes();
+        $types = Helper::getValidRecordTypes();
 
         if(in_array($value, $types)){
             return true;

@@ -41,10 +41,9 @@ class RecordValueValidator
                 break;
             case Cst::RECORD_TYPE_XURL:
             case Cst::RECORD_TYPE_YURL:
-                if (strlen($value) > XyUrlValidator::RECORD_MAX_XYURL_LEN) {
+                if (strlen($value) > XyUrlValidator::RECORD_MAX_XY_URL_LEN) {
                     return false;
                 }
-
                 return XyUrlValidator::validate($value);
                 break;
             case Cst::RECORD_TYPE_TXT:

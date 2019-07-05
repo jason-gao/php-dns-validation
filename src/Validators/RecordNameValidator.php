@@ -13,7 +13,7 @@
  * 显性URL：不支持泛解析（泛解析：将所有子域名解析到同一地址）
  *
  *
- * 主机记录（RR）值合法字符包含a--z、A--Z、0--9、'-' 、'_' 、'.'、'*'、'@'、'中文汉字'
+ * 主机记录（RR）值合法字符包含a-z、A-Z、0-9、'-' 、'_' 、'.'、'*'、'@'
  * 主机记录（RR）值不能以\“."、\“-"开头或结尾
  * 主机记录（RR）值不能以"符号"单独存在。
  * 主机记录（RR）值不能有连续的"."。
@@ -28,54 +28,8 @@ class RecordNameValidator
     public static function validate($value)
     {
 
-        $invalid_chars = preg_replace('/[a-zA-Z0-9-_.*@]/', '', $value);
-
-        if(!empty($invalid_chars)){
-            return false;
-        }
-
-        $name_length = strlen($value);
-
-        //存在且不在第一位
-        if (strpos($value, '*') && $name_length > 1) {
-            return false;
-        }
-
-        if (false !== strpos($value, '@') && $name_length > 1) {
-            return false;
-        }
-
-        if (in_array($value[0], ['-', '.']) || in_array($value[$name_length - 1], ['-', '.'])) {
-            return false;
-        }
-        if (false !== strpos($value, '.')) {
-            $record_name_arr = explode('.', $value);
-            array_shift($record_name_arr);
-            if (in_array('*', $record_name_arr)) {
-                return false;
-            }
-        }
-
-
-        if(!preg_match("/^[a-zA-Z0-9-_\.\*@\u4e00-\u9fa5]+$/", $value)){
-            return false;
-        }
-
-        if(preg_match("/^\.\-/", $value)){
-            return false;
-        }
-
-        if(strpos($value, "..") !== false){
-            return false;
-        }
-
-
         if (in_array($value, ['@', '*'])) {
             return true;
-        }
-
-        if (strpos($value, '@') !== false && strlen($value) > 1) {
-            return false;
         }
 
         $ipv4V = Ip4Validator::validate($value);
@@ -84,13 +38,49 @@ class RecordNameValidator
             return true;
         }
 
-        $pieces = explode(".", $value);
+        if(!preg_match("/^[a-zA-Z0-9-_\.\*@]+$/", $value)){
+            return false;
+        }
 
+        if(preg_match("/^[\.-]/", $value)){
+            return false;
+        }
+
+        if(preg_match("/[\.-]$/", $value)){
+            return false;
+        }
+
+        if(strpos($value, "..") !== false){
+            return false;
+        }
+
+        $pieces = explode(".", $value);
         foreach ($pieces as $piece) {
-            if (mb_strlen($piece) > 63) {
+            if (strlen($piece) > 63) {
                 return false;
             }
         }
+
+        $l = strlen($value);
+
+        //存在且不在第一位
+        if (strpos($value, '*') && $l > 1) {
+            return false;
+        }
+
+        if (false !== strpos($value, '@') && $l > 1) {
+            return false;
+        }
+
+
+        if (false !== strpos($value, '.')) {
+            $record_name_arr = explode('.', $value);
+            array_shift($record_name_arr);
+            if (in_array('*', $record_name_arr)) {
+                return false;
+            }
+        }
+
 
         return true;
     }

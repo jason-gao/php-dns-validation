@@ -5,7 +5,6 @@ namespace DnsValidation;
 class Cst
 {
 
-
     const RECORD_TYPE_A = 'A';
     const RECORD_TYPE_4A = 'AAAA';
     const RECORD_TYPE_CNAME = 'CNAME';
@@ -20,22 +19,6 @@ class Cst
     const RECORD_TYPE_YURL = 'YURL';
     const RECORD_TYPE_CAA = 'CAA';
     const RECORD_TYPE_NAPTR = 'NAPTR';
-
-
-    public static function getValidRecordTypes()
-    {
-        return [
-            self::RECORD_TYPE_A,
-            self::RECORD_TYPE_4A,
-            self::RECORD_TYPE_CNAME,
-            self::RECORD_TYPE_MX,
-            self::RECORD_TYPE_XURL,
-            self::RECORD_TYPE_YURL,
-            self::RECORD_TYPE_TXT,
-            self::RECORD_TYPE_NS,
-            self::RECORD_TYPE_SRV
-        ];
-    }
 
 
 }

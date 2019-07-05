@@ -2,16 +2,18 @@
 
 namespace DnsValidation\Validators;
 
-class DefaultViewValidator{
+use DnsValidation\Helper;
+
+class DefaultViewValidator
+{
 
 
     const VIEW_DEFAULT = 'any';
 
-    public static function validate($view, $recordList){
-
-        $views = array_column($recordList, 'view');
-
-        return in_array($view, $views);
+    public static function validate($views)
+    {
+        $views = Helper::arrFilterUnique($views);
+        return in_array(self::VIEW_DEFAULT, $views);
 
     }
 }
