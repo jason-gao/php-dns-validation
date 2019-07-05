@@ -2,6 +2,7 @@
 
 /**
  * 验证记录类型冲突
+ * https://help.aliyun.com/knowledge_detail/39787.html
  */
 
 namespace DnsValidation\Validators;

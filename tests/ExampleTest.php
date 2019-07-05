@@ -43,7 +43,7 @@ class ExampleTest extends TestCase
         $value5 = "*.a.com";
         $value6 = str_repeat("a", 500);
         $value7 = "";
-        $value8 = "a".str_repeat("a", 100).".com";
+        $value8 = "a" . str_repeat("a", 100) . ".com";
 
         $this->assertTrue(DnsDomainValidator::validate($value));
         $this->assertTrue(DnsDomainValidator::validate($value2));
@@ -262,8 +262,10 @@ class ExampleTest extends TestCase
     {
         //A
         $value = [
+            CST::RECORD_TYPE_MX,
             CST::RECORD_TYPE_A,
             CST::RECORD_TYPE_CNAME,
+            CST::RECORD_TYPE_NS,
         ];
 
         $value2 = [
@@ -315,7 +317,8 @@ class ExampleTest extends TestCase
         $this->assertFalse(DotEndingValidator::validate($value3));
     }
 
-    public function testStringLength(){
+    public function testStringLength()
+    {
         $value = "a.com";
         $min = 1;
         $max = 10;
@@ -324,5 +327,27 @@ class ExampleTest extends TestCase
         $this->assertTrue(StringLengthValidator::validate($value, $min, $max));
         $this->assertFalse(StringLengthValidator::validate($value, $min, $max2));
     }
+
+    public function testRecordValueIp4()
+    {
+        $type = Cst::RECORD_TYPE_A;
+        $value = "1.1.1.1";
+        $value2 = "1.1.1";
+
+
+        $this->assertTrue(RecordValueValidator::validate($type, $value));
+        $this->assertFalse(RecordValueValidator::validate($type, $value2));
+    }
+
+    public function testRecordValueIp6()
+    {
+        $type = Cst::RECORD_TYPE_4A;
+        $value = "2001:0db8:3c4d:0015:0000:0000:1a2f:1a2b";
+        $value2 = "2001:0db8:3c4d:0015:0000:0000:1a2f";
+
+        $this->assertTrue(RecordValueValidator::validate($type, $value));
+        $this->assertFalse(RecordValueValidator::validate($type, $value2));
+    }
+
 
 }

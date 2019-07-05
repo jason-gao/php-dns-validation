@@ -6,4 +6,7 @@
     - TXT记录验证
 	- 更多记录类型支持
 	- dns zone的验证
+	
+	
+## phpunit test cover 90%	
 
