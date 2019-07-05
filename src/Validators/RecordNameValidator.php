@@ -54,11 +54,8 @@ class RecordNameValidator
             return false;
         }
 
-        $pieces = explode(".", $value);
-        foreach ($pieces as $piece) {
-            if (strlen($piece) > 63) {
-                return false;
-            }
+        if(!LabelLengthValidator::validate($value)){
+            return false;
         }
 
         $l = strlen($value);

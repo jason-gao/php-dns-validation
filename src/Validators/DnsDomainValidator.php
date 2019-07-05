@@ -22,13 +22,8 @@ class DnsDomainValidator
             return false;
         }
 
-        $pieces = explode(".", $value);
-
-        //https://www.ietf.org/rfc/rfc3696.txt
-        foreach ($pieces as $piece) {
-            if (mb_strlen($piece) > 63) {
-                return false;
-            }
+        if(!LabelLengthValidator::validate($value)){
+            return false;
         }
 
         return true;
