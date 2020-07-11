@@ -13,4 +13,4 @@
 	- make test
 	
 ## composer
-	- composer require jason-gao/dns-validation v1.0.0 	
+	- composer require jason-gao/php-dns-validation v1.0.0 	
